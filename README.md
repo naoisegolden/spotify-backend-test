@@ -6,9 +6,11 @@ Mail: naoise.golden@gmail.com
 
 Start: 	2011-09-14 16:00 GMT+1
 
-End: 2011-09-14 XX:XX GMT+1
+End: 2011-09-14 19:00 GMT+1
 
-Total developing time: X hours
+Total developing time: 3 hours
+
+At this point I must leave. If it is possible I will continue later.
 
 ===
 

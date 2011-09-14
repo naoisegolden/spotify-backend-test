@@ -33,7 +33,9 @@ class Application extends lib {
     	// we need to grab: rank, rating, title, year and number_of_votes
 		
 		// grap what we have
-		if (!is_null($elements)) {
+		if (is_null($elements)) {
+			throw new Exception('Nothing was parsed from '. $url);
+		} else {
 		  	// loop the array
 		  	$i = 0;
 		  	$data = array();
@@ -71,22 +73,46 @@ class Application extends lib {
 
     	return $data;
     }
+    
+    /**
+     * Stores the given data, only if this data is not already stored.
+     * @param matrix data table of movies
+     * @param string message info of what happened
+     */
+    private function _store($data = null) {
+    	if (!$data )
+    		throw new Exception('Nothing to store.');
+    	
+    	throw new Exception ("DB storing not available yet");
+    		
+    }
     /**
 	 * Main function, triggers all the logic and renders.
 	 */
     public function run($url = null) {
 
-        $error = '';
-        $message = '';
+        $errors = array();
+        $messages = array();
         $data = array();
         
-        try {
-    		$data = $this->_parse($url);
-    	} catch (Exception $e) {
-    		$error = $e->getMessage();
+        // poor man's chron: we parse when someone visits the page
+    	$mysqldate = date( 'Y-m-d' ); // we use MySQL DATE to know if it's stored
+    	if(!$this->dateIsStored($mysqldate)){
+    		// date is not stored, proceed to parse and store
+    		try {
+    			$messages[] = "Proceeding to parse " . $url . ".";
+	    		$data = $this->_parse($url);
+	    		$messages[] = "Proceeding to store in db.";
+	    		$messages[] = $this->_store($data);
+	    	} catch (Exception $e) {
+	    		$errors[] = $e->getMessage();
+	    	}
+    	} else {
+    		// date is stored, nothing to store. move on.
+    		$messages[] = "Today's chart is already stored.";
     	}
-
-        $this->render('main', compact('var', 'var2', 'error', 'message', 'data'));
+    	
+        $this->render('main', compact('errors', 'messages', 'data'));
     }
 
 }
